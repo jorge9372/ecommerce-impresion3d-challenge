@@ -50,7 +50,7 @@ model Product {
 
   orderItems OrderItem[]
 
-  // --- Campos específicos para Impresión 3D (¡Adapta estos a tu negocio!) ---
+  // --- Campos específicos ---
   material   String? // Ej: "PLA", "ABS", "PETG", "Resina Estándar"
   color      String? // Ej: "Rojo", "Azul Translúcido"
   dimensions String? // Ej: "200x200x50mm" para una pieza impresa, o especificaciones de la impresora

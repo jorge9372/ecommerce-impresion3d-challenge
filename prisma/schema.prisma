@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../app/generated/prisma"
@@ -12,4 +6,108 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+// --- MODELOS ---
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String // ¡Recuerda hashear esto antes de guardarlo!
+  name      String?
+  role      UserRole @default(CUSTOMER)
+  orders    Order[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum UserRole {
+  ADMIN
+  CUSTOMER
+}
+
+model Category {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  slug        String    @unique // Para URLs amigables, ej: "filamentos-pla"
+  description String?
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Product {
+  id          String         @id @default(uuid())
+  name        String
+  description String?        @db.Text // Para descripciones largas
+  price       Decimal        @db.Decimal(10, 2) // Ej: 12345678.90
+  stock       Int            @default(0)
+  images      ProductImage[]
+  isActive    Boolean        @default(true)
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  orderItems OrderItem[]
+
+  // --- Campos específicos para Impresión 3D (¡Adapta estos a tu negocio!) ---
+  material   String? // Ej: "PLA", "ABS", "PETG", "Resina Estándar"
+  color      String? // Ej: "Rojo", "Azul Translúcido"
+  dimensions String? // Ej: "200x200x50mm" para una pieza impresa, o especificaciones de la impresora
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ProductImage {
+  id        String   @id @default(uuid())
+  url       String // URL de la imagen
+  altText   String? // Texto alternativo para accesibilidad y SEO
+  productId String // Clave foránea para enlazar con Product
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade) // onDelete: Cascade es opcional, significa que si borras un producto, se borran sus imágenes.
+  order     Int? // Para definir un orden de aparición de las imágenes
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productId])
+}
+
+model Order {
+  id     String      @id @default(uuid())
+  userId String
+  user   User        @relation(fields: [userId], references: [id])
+  status OrderStatus @default(PENDING_CART)
+  items  OrderItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+enum OrderStatus {
+  PENDING_CART
+  PENDING_PAYMENT
+  COMPLETED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model OrderItem {
+  id              String  @id @default(uuid())
+  orderId         String
+  order           Order   @relation(fields: [orderId], references: [id])
+  productId       String
+  product         Product @relation(fields: [productId], references: [id])
+  quantity        Int
+  priceAtPurchase Decimal @db.Decimal(10, 2) // Precio del producto AL MOMENTO de añadirlo/comprarlo
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([orderId, productId]) // Un producto solo puede aparecer una vez por orden
+  @@index([orderId])
+  @@index([productId])
 }

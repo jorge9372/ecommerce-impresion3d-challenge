@@ -16,6 +16,13 @@ function slugify(text: string): string {
 async function main() {
     console.log(`Start seeding ... ${new Date().toLocaleTimeString()}`);
 
+    console.log(
+        '🧹 Deleting existing data (ProductImage, Product, Category)...'
+    );
+    await prisma.productImage.deleteMany({});
+    await prisma.product.deleteMany({});
+    await prisma.category.deleteMany({});
+    console.log('🗑️ Existing catalog data deleted.');
     // --- 1. Crear Usuario Administrador ---
     const adminPlainPassword =
         process.env.SEED_ADMIN_PASSWORD || 'adminDevDefault123!';

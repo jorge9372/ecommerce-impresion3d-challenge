@@ -97,7 +97,7 @@ async function main() {
     // --- 3. Crear Productos (con imágenes anidadas) ---
     const productsData = [
         {
-            name: 'Dragón Articulado de Fuego V2', // Cambié un poco el nombre para evitar conflicto si ya existe sin SKU
+            name: 'Dragón Articulado de Fuego V2',
             description:
                 'Impresionante dragón articulado con detalles de llamas, perfecto para coleccionistas. Impreso en PLA resistente.',
             price: 29.99,
@@ -109,7 +109,6 @@ async function main() {
             material: 'PLA+',
             color: 'Rojo Fuego con detalles Naranja',
             dimensions: '25cm largo x 15cm alto',
-            // sku: ya no está
             images: [
                 {
                     url: 'https://via.placeholder.com/600x400.png/FF5733/FFFFFF?Text=Dragon+Fuego+V2+1',
@@ -144,7 +143,7 @@ async function main() {
                 },
             ],
         },
-        // Puedes añadir más productos si lo deseas
+        
     ];
 
     for (const prodData of productsData) {
@@ -154,11 +153,7 @@ async function main() {
             );
             continue;
         }
-        // Si 'name' no es único en tu schema Product, upsert podría actualizar un producto existente
-        // si tiene el mismo nombre. Si quieres asegurar la creación de nuevos productos siempre
-        // que ejecutas el seed y los nombres podrían repetirse, considera usar 'create' en lugar de 'upsert'
-        // o añade un campo único (como lo era SKU) para usar en el 'where' del upsert.
-        // Por ahora, asumimos que los nombres en `productsData` son suficientemente únicos para el seed.
+       
         const product = await prisma.product.create({
             data: {
                 name: prodData.name,
@@ -185,7 +180,7 @@ async function main() {
         console.log(`✅ Product created: ${product.name}`);
     }
 
-    // --- SECCIÓN DE ÓRDENES Y ORDERITEMS ELIMINADA ---
+
 
     console.log(`Seeding finished. ${new Date().toLocaleTimeString()}`);
 }

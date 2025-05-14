@@ -111,12 +111,12 @@ async function main() {
             dimensions: '25cm largo x 15cm alto',
             images: [
                 {
-                    url: 'https://via.placeholder.com/600x400.png/FF5733/FFFFFF?Text=Dragon+Fuego+V2+1',
+                    url: 'https://placehold.co/600x400/FF5733/FFFFFF/png?text=Dragon+Fuego+V2+1',
                     altText: 'Dragón de Fuego V2 vista frontal',
                     order: 1,
                 },
                 {
-                    url: 'https://via.placeholder.com/600x400.png/FFC300/000000?Text=Dragon+Fuego+V2+2',
+                    url: 'https://placehold.co/600x400/FFC300/000000/png?text=Dragon+Fuego+V2+2',
                     altText: 'Dragón de Fuego V2 detalle ala',
                     order: 2,
                 },
@@ -137,7 +137,7 @@ async function main() {
             dimensions: 'Cada módulo 8cm x 7cm',
             images: [
                 {
-                    url: 'https://via.placeholder.com/600x400.png/4D5656/FFFFFF?Text=Portalapices+Hex+V2',
+                    url: 'https://placehold.co/600x400/4D5656/FFFFFF/png?text=Portalapices+Hex+V2',
                     altText: 'Portalápices Hexagonal V2',
                     order: 1,
                 },

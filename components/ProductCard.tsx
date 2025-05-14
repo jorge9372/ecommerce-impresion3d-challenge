@@ -2,14 +2,13 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-// Puedes definir este tipo aquí o importarlo desde un archivo de tipos compartido
+
 export interface ProductForCard {
     id: string;
     name: string;
     price: number;
     images: { url: string; altText?: string | null }[];
     category?: { name: string } | null;
-    // Podrías añadir el slug del producto aquí para la URL si lo tienes
     // slug?: string;
 }
 
@@ -46,14 +45,14 @@ export default function ProductCard({ product }: ProductCardProps) {
             </div>
             <div className="p-4">
                 {product.category && (
-                    <span className="text-xs text-gray-500 mb-1 inline-block tracking-wide uppercase">
+                    <span className="text-xs font-medium text-gray-600 mb-1 inline-block tracking-wide uppercase">
                         {product.category.name}
                     </span>
                 )}
-                <h3 className="text-md font-semibold text-gray-900 mb-1 truncate group-hover:text-indigo-700 transition-colors">
+                <h3 className="text-md font-bold text-gray-800 mb-1 truncate group-hover:text-indigo-700 transition-colors">
                     {product.name}
                 </h3>
-                <p className="text-lg font-bold text-indigo-600">
+                <p className="text-lg font-bold text-indigo-700">
                     ${product.price.toFixed(2)}
                 </p>
                 {/* Botón (para el futuro) */}

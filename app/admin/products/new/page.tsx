@@ -84,7 +84,7 @@ export default function NewProductPage() {
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <h1 className="text-2xl font-bold mb-6 text-gray-800">
+            <h1 className="text-2xl font-bold mb-6 text-indigo-700">
                 Crear Nuevo Producto
             </h1>
             {error && (

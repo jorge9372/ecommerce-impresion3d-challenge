@@ -1,17 +1,8 @@
 import { NextResponse } from 'next/server';
 
 import prisma from '@/lib/prisma';
-
-// Función para generar slugs (puedes moverla a un archivo de utilidades si la usas en más lugares)
-function slugify(text: string): string {
-    return text
-        .toString()
-        .toLowerCase()
-        .trim()
-        .replace(/\s+/g, '-') // Reemplaza espacios con -
-        .replace(/[^\w-]+/g, '') // Quita caracteres no alfanuméricos (excepto -)
-        .replace(/--+/g, '-'); // Reemplaza múltiples - con uno solo
-}
+import { CreateCategorySchema } from '@/lib/validations';
+import { slugify } from '@/lib/utils';
 
 /**
  * GET /api/categories
@@ -54,33 +45,32 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
     try {
         const data = await request.json();
-        const { name, description } = data;
-
-        // Validación básica
-        if (!name || typeof name !== 'string' || name.trim() === '') {
+        
+        // Validación con Zod
+        const validationResult = CreateCategorySchema.safeParse(data);
+        if (!validationResult.success) {
             return NextResponse.json(
                 {
-                    message:
-                        'El nombre (name) es requerido y no puede estar vacío.',
+                    message: 'Error de validación.',
+                    errors: validationResult.error.flatten().fieldErrors,
                 },
                 { status: 400 }
             );
         }
 
+        const { name, description } = validationResult.data;
+
         const newCategory = await prisma.category.create({
             data: {
                 name: name.trim(),
-                slug: slugify(name.trim()), // Generar slug automáticamente
+                slug: slugify(name.trim()),
                 description: description || null,
             },
         });
-        return NextResponse.json(newCategory, { status: 201 }); // 201 Created
+        return NextResponse.json(newCategory, { status: 201 });
     } catch (error: any) {
-        // Especificar 'any' o un tipo más específico
         console.error('Error al crear la categoría:', error);
-        // Manejar errores específicos de Prisma, como violaciones de constraint único
         if (error.code === 'P2002') {
-            // Código de error de Prisma para 'Unique constraint failed'
             let field = 'desconocido';
             if (error.meta?.target?.includes('name')) {
                 field = 'nombre';
@@ -90,7 +80,7 @@ export async function POST(request: Request) {
             return NextResponse.json(
                 { message: `Ya existe una categoría con ese ${field}.` },
                 { status: 409 }
-            ); // 409 Conflict
+            );
         }
         const errorMessage =
             error instanceof Error

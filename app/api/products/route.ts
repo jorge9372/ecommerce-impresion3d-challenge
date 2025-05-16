@@ -1,36 +1,13 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { z } from 'zod';
+import { CreateProductSchema } from '@/lib/validations';
 
 // --- Esquemas de Validación de Zod---
 const ProductImageSchema = z.object({
     url: z.string().url({ message: 'La URL de la imagen debe ser válida.' }),
     altText: z.string().optional(),
     order: z.number().int().positive().optional(),
-});
-
-const CreateProductSchema = z.object({
-    name: z
-        .string({ required_error: 'El nombre es requerido.' })
-        .min(3, { message: 'El nombre debe tener al menos 3 caracteres.' }),
-    description: z.string().optional(),
-    price: z
-        .number({ required_error: 'El precio es requerido.' })
-        .positive({ message: 'El precio debe ser un número positivo.' }),
-    stock: z
-        .number()
-        .int()
-        .nonnegative({ message: 'El stock debe ser un entero no negativo.' })
-        .optional()
-        .default(0),
-    categoryId: z
-        .string({ required_error: 'El ID de la categoría es requerido.' })
-        .uuid({ message: 'El ID de la categoría debe ser un UUID válido.' }),
-    material: z.string().optional(),
-    color: z.string().optional(),
-    dimensions: z.string().optional(),
-    isActive: z.boolean().optional().default(true),
-    images: z.array(ProductImageSchema).optional().default([]), // Array de imágenes, opcional
 });
 
 /**
@@ -86,7 +63,7 @@ export async function POST(request: Request) {
             return NextResponse.json(
                 {
                     message: 'Error de validación.',
-                    errors: validationResult.error.flatten().fieldErrors, // Errores detallados por campo
+                    errors: validationResult.error.flatten().fieldErrors,
                 },
                 { status: 400 }
             );
@@ -106,7 +83,7 @@ export async function POST(request: Request) {
             images,
         } = validationResult.data;
 
-        // Verificar que la categoría exista (esto sigue siendo una validación de lógica de negocio)
+        // Verificar que la categoría exista
         const categoryExists = await prisma.category.findUnique({
             where: { id: categoryId },
         });
@@ -116,7 +93,7 @@ export async function POST(request: Request) {
                     message: `La categoría con ID ${categoryId} no fue encontrada.`,
                 },
                 { status: 404 }
-            ); // 404 Not Found, o 400 Bad Request
+            );
         }
 
         // --- Creación del producto en la base de datos ---
@@ -136,7 +113,7 @@ export async function POST(request: Request) {
                         ? {
                               create: images.map((img) => ({
                                   url: img.url,
-                                  altText: img.altText || name, // Usar el nombre del producto como altText por defecto si no se provee
+                                  altText: img.altText || name,
                                   order: img.order || 1,
                               })),
                           }
@@ -151,7 +128,6 @@ export async function POST(request: Request) {
         return NextResponse.json(newProduct, { status: 201 });
     } catch (error: any) {
         console.error('Error al crear el producto:', error);
-        // (Manejo de errores de Prisma como P2002 si tienes campos únicos)
         const errorMessage =
             error instanceof Error
                 ? error.message

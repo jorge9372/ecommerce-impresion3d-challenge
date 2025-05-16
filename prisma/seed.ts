@@ -111,7 +111,7 @@ async function main() {
             dimensions: '20cm alto x 12cm ancho',
             images: [
                 {
-                    url: 'https://placehold.co/600x400/2C3E50/FFFFFF/png?text=Robot+Cyberpunk+V3',
+                    url: 'https://dummyimage.com/600x400/000/fff.png&text=Robot+Cyberpunk',
                     altText: 'Robot Cyberpunk vista lateral',
                     order: 1,
                 },
@@ -132,7 +132,7 @@ async function main() {
             dimensions: '15cm x 10cm x 6cm',
             images: [
                 {
-                    url: 'https://placehold.co/600x400/1A237E/FFFFFF/png?text=Organizador+Galaxy',
+                    url: 'https://dummyimage.com/600x400/000/fff.png&text=Organizador+Cables',
                     altText: 'Organizador de cables cerrado',
                     order: 1,
                 },
@@ -152,7 +152,7 @@ async function main() {
             dimensions: 'Ø20cm x 5cm',
             images: [
                 {
-                    url: 'https://placehold.co/600x400/757575/FFFFFF/png?text=Lampara+Lunar',
+                    url: 'https://dummyimage.com/600x400/000/fff.png&text=Lampara+Lunar',
                     altText: 'Lámpara lunar encendida',
                     order: 1,
                 },
@@ -172,7 +172,7 @@ async function main() {
             dimensions: '30cm alto x 25cm ancho',
             images: [
                 {
-                    url: 'https://placehold.co/600x400/212121/FFFFFF/png?text=Soporte+Consolas',
+                    url: 'https://dummyimage.com/600x400/000/fff.png&text=Soporte+Consolas',
                     altText: 'Soporte doble para consolas',
                     order: 1,
                 },
@@ -193,7 +193,7 @@ async function main() {
             dimensions: '80cm x 25cm x 3cm',
             images: [
                 {
-                    url: 'https://placehold.co/600x400/37474F/FFFFFF/png?text=Bandeja+Flotante',
+                    url: 'https://dummyimage.com/600x400/000/fff.png&text=Bandeja+Teclado',
                     altText: 'Bandeja instalada bajo mesa',
                     order: 1,
                 },
@@ -214,7 +214,7 @@ async function main() {
             dimensions: '28cm alto x 18cm base',
             images: [
                 {
-                    url: 'https://placehold.co/600x400/FFD700/000000/png?text=Cyber+Samurai',
+                    url: 'https://dummyimage.com/600x400/000/fff.png&text=Cyber+Samurai',
                     altText: 'Samurai vista frontal',
                     order: 1,
                 },
@@ -234,7 +234,7 @@ async function main() {
             dimensions: '12cm x 12cm x 12cm',
             images: [
                 {
-                    url: 'https://placehold.co/600x400/4CAF50/FFFFFF/png?text=Macetero+Hex',
+                    url: 'https://dummyimage.com/600x400/000/fff.png&text=Macetero+Hex',
                     altText: 'Macetero con planta',
                     order: 1,
                 },
@@ -254,7 +254,7 @@ async function main() {
             dimensions: '15cm x 15cm x 10cm',
             images: [
                 {
-                    url: 'https://placehold.co/600x400/311B92/FFFFFF/png?text=Soporte+RGB',
+                    url: 'https://dummyimage.com/600x400/000/fff.png&text=Soporte+Auriculares',
                     altText: 'Soporte con iluminación',
                     order: 1,
                 },
@@ -274,7 +274,7 @@ async function main() {
             dimensions: 'Ø30cm x 2cm',
             images: [
                 {
-                    url: 'https://placehold.co/600x400/795548/FFFFFF/png?text=Reloj+Fractal',
+                    url: 'https://dummyimage.com/600x400/000/fff.png&text=Reloj+Fractal',
                     altText: 'Reloj colgado en pared',
                     order: 1,
                 },
@@ -294,7 +294,7 @@ async function main() {
             dimensions: '18cm x 12cm x 8cm',
             images: [
                 {
-                    url: 'https://placehold.co/600x400/D32F2F/FFFFFF/png?text=Organizador+Mandos',
+                    url: 'https://dummyimage.com/600x400/000/fff.png&text=Organizador+Mandos',
                     altText: 'Organizador con mandos',
                     order: 1,
                 },
@@ -315,12 +315,12 @@ async function main() {
             dimensions: '25cm largo x 15cm alto',
             images: [
                 {
-                    url: 'https://placehold.co/600x400/FF5733/FFFFFF/png?text=Dragon+Fuego+V2+1',
+                    url: 'https://dummyimage.com/600x400/000/fff.png&text=Dragon+Fuego',
                     altText: 'Dragón de Fuego V2 vista frontal',
                     order: 1,
                 },
                 {
-                    url: 'https://placehold.co/600x400/FFC300/000000/png?text=Dragon+Fuego+V2+2',
+                    url: 'https://dummyimage.com/600x400/000/fff.png&text=Dragon+Detalle',
                     altText: 'Dragón de Fuego V2 detalle ala',
                     order: 2,
                 },
@@ -341,7 +341,7 @@ async function main() {
             dimensions: 'Cada módulo 8cm x 7cm',
             images: [
                 {
-                    url: 'https://placehold.co/600x400/4D5656/FFFFFF/png?text=Portalapices+Hex+V2',
+                    url: 'https://dummyimage.com/600x400/000/fff.png&text=Portalapices+Hex',
                     altText: 'Portalápices Hexagonal V2',
                     order: 1,
                 },

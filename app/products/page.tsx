@@ -35,7 +35,7 @@ async function getProducts(): Promise<ProductForCard[]> {
                   }))
                 : [
                       {
-                          url: 'https://via.placeholder.com/300x200.png?text=No+Image',
+                          url: 'https://dummyimage.com/600x400/000/fff.png&text=Sin+Imagen',
                           altText: 'Producto sin imagen',
                       },
                   ],

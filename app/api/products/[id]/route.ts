@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { z } from 'zod';
+import { UpdateProductSchema } from '@/lib/validations';
 
 // Esquema Zod para la actualización (permite campos opcionales)
 const ProductImageUpdateSchema = z.object({
@@ -9,31 +10,31 @@ const ProductImageUpdateSchema = z.object({
     order: z.number().int().positive().optional(),
 });
 
-const UpdateProductSchema = z.object({
-    name: z
-        .string()
-        .min(3, { message: 'El nombre debe tener al menos 3 caracteres.' })
-        .optional(),
-    description: z.string().optional().nullable(),
-    price: z
-        .number()
-        .positive({ message: 'El precio debe ser un número positivo.' })
-        .optional(),
-    stock: z
-        .number()
-        .int()
-        .nonnegative({ message: 'El stock debe ser un entero no negativo.' })
-        .optional(),
-    categoryId: z
-        .string()
-        .uuid({ message: 'El ID de la categoría debe ser un UUID válido.' })
-        .optional(),
-    material: z.string().optional().nullable(),
-    color: z.string().optional().nullable(),
-    dimensions: z.string().optional().nullable(),
-    isActive: z.boolean().optional(),
-    images: z.array(ProductImageUpdateSchema).optional(), // Permite actualizar el array de imágenes
-});
+// const UpdateProductSchema = z.object({
+//     name: z
+//         .string()
+//         .min(3, { message: 'El nombre debe tener al menos 3 caracteres.' })
+//         .optional(),
+//     description: z.string().optional().nullable(),
+//     price: z
+//         .number()
+//         .positive({ message: 'El precio debe ser un número positivo.' })
+//         .optional(),
+//     stock: z
+//         .number()
+//         .int()
+//         .nonnegative({ message: 'El stock debe ser un entero no negativo.' })
+//         .optional(),
+//     categoryId: z
+//         .string()
+//         .uuid({ message: 'El ID de la categoría debe ser un UUID válido.' })
+//         .optional(),
+//     material: z.string().optional().nullable(),
+//     color: z.string().optional().nullable(),
+//     dimensions: z.string().optional().nullable(),
+//     isActive: z.boolean().optional(),
+//     images: z.array(ProductImageUpdateSchema).optional(), // Permite actualizar el array de imágenes
+// });
 
 /**
  * GET /api/products/[id]
@@ -87,7 +88,7 @@ export async function PUT(
         const { id } = resolvedParams;
         const requestData = await request.json();
 
-        // Validación con Zod (recomendado)
+        // Validación con Zod
         const validationResult = UpdateProductSchema.safeParse(requestData);
         if (!validationResult.success) {
             return NextResponse.json(
@@ -129,21 +130,12 @@ export async function PUT(
                 color: dataToUpdate.color,
                 dimensions: dataToUpdate.dimensions,
                 isActive: dataToUpdate.isActive,
-                // Manejo de imágenes: Si se envía el campo 'images' en el payload,
-                // esta lógica reemplazará todas las imágenes existentes del producto.
-                // Si 'images' no se envía, las imágenes existentes no se modifican.
-                // Si se envía 'images: []' (array vacío), se borrarán todas las imágenes.
                 ...(dataToUpdate.images !== undefined && {
-                    // Solo modificar imágenes si el campo 'images' está presente
                     images: {
-                        deleteMany: {}, // Borra todas las imágenes asociadas existentes
+                        deleteMany: {},
                         create: dataToUpdate.images.map((img) => ({
-                            // Crea las nuevas imágenes
                             url: img.url,
-                            altText:
-                                img.altText ||
-                                dataToUpdate.name ||
-                                'Imagen de producto',
+                            altText: img.altText || dataToUpdate.name || 'Imagen de producto',
                             order: img.order || 1,
                         })),
                     },
@@ -158,14 +150,6 @@ export async function PUT(
         return NextResponse.json(updatedProduct);
     } catch (error: any) {
         console.error('Error al actualizar el producto:', error);
-        if (error.code === 'P2025') {
-            // Error de Prisma: Registro a actualizar no encontrado
-            return NextResponse.json(
-                { message: 'Producto no encontrado para actualizar' },
-                { status: 404 }
-            );
-        }
-        // Manejar otros errores específicos de Prisma si es necesario
         const errorMessage =
             error instanceof Error
                 ? error.message

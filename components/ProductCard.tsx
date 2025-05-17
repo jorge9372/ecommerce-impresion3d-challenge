@@ -52,7 +52,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                 <h3 className="text-md font-bold text-gray-800 mb-1 truncate group-hover:text-indigo-700 transition-colors">
                     {product.name}
                 </h3>
-                <p className="text-lg font-bold text-indigo-700">
+                <p className="text-lg font-bold text-destructive">
                     ${product.price.toFixed(2)}
                 </p>
                 {/* Botón (para el futuro) */}

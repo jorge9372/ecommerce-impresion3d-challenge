@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 import prisma from '@/lib/prisma';
 import { CreateCategorySchema } from '@/lib/validations';
-import { slugify } from '@/lib/utils';
+import { slugify } from '@/lib/utils/index';
 
 /**
  * GET /api/categories

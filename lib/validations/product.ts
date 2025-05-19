@@ -1,11 +1,19 @@
 import { z } from 'zod';
 
 // Esquema para las imágenes de productos
-export const ProductImageSchema = z.object({
-    url: z.string().url({ message: 'La URL de la imagen debe ser válida.' }),
-    altText: z.string().optional(),
-    order: z.number().int().positive().optional(),
-});
+// export const ProductImageSchema = z.object({
+//     url: z.string().url({ message: 'La URL de la imagen debe ser válida.' }),
+//     altText: z.string().optional(),
+//     order: z.number().int().positive().optional(),
+// });
+
+export const ProductImageSchema = z.object({ // Lo llamo ProductImageSchema para generalidad
+    id: z.string().uuid().optional(), // Útil si alguna vez quieres actualizar imágenes existentes por su ID
+    url: z.string().url({ message: "La URL de la imagen debe ser válida." }),
+    altText: z.string().optional().nullable(),
+    order: z.number().int().positive().optional().nullable(),
+    providerImageId: z.string().optional().nullable(), // Para el ID del proveedor de imágenes
+  });
 
 // Esquema para crear un nuevo producto
 export const CreateProductSchema = z.object({

@@ -101,7 +101,7 @@ export default async function Home() {
             <section className="relative h-[600px] overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-brand-primary/90 to-brand-primary/70 z-10" />
                 <Image
-                    src="/images/hero-3d-print.jpg"
+                    src="/banner4.jpg"
                     alt="Impresión 3D de alta calidad"
                     fill
                     className="object-cover"

@@ -59,15 +59,18 @@ model Product {
   updatedAt DateTime @updatedAt
 }
 
+
+
 model ProductImage {
-  id        String   @id @default(uuid())
-  url       String // URL de la imagen
-  altText   String? // Texto alternativo para accesibilidad y SEO
-  productId String // Clave foránea para enlazar con Product
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade) // onDelete: Cascade es opcional, significa que si borras un producto, se borran sus imágenes.
-  order     Int? // Para definir un orden de aparición de las imágenes
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              String   @id @default(uuid())
+  url             String   // URL de la imagen (proporcionada por ImageKit)
+  altText         String?
+  productId       String
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  order           Int?
+  providerImageId String?  // <--- NUEVO CAMPO: Para guardar el fileId de ImageKit
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   @@index([productId])
 }

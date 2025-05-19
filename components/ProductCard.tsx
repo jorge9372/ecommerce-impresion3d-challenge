@@ -28,7 +28,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
     return (
         <Link
-            href={`/products/${product.id}`} // Más adelante, esta será la página de detalle del producto
+            href={`/productos/${product.id}`} // Más adelante, esta será la página de detalle del producto
             className="group block border rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out bg-white"
         >
             <div className="relative w-full aspect-[4/3] bg-gray-100">

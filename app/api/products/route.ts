@@ -1,14 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { z } from 'zod';
-import { CreateProductSchema } from '@/lib/validations';
-
-// --- Esquemas de Validación de Zod---
-const ProductImageSchema = z.object({
-    url: z.string().url({ message: 'La URL de la imagen debe ser válida.' }),
-    altText: z.string().optional(),
-    order: z.number().int().positive().optional(),
-});
+import { CreateProductSchema, ProductImageInput } from '@/lib/validations';
 
 /**
  * GET /api/products
@@ -109,12 +102,13 @@ export async function POST(request: Request) {
                 dimensions,
                 isActive,
                 images:
-                    images.length > 0
+                    images && images.length > 0
                         ? {
                               create: images.map((img) => ({
                                   url: img.url,
-                                  altText: img.altText || name,
+                                  altText: img.altText, // Considera un fallback aquí
                                   order: img.order || 1,
+                                  providerImageId: img.providerImageId,
                               })),
                           }
                         : undefined,

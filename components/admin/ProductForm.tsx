@@ -1,27 +1,455 @@
+// 'use client';
+
+// import { useState, FormEvent } from 'react';
+// import { useRouter } from 'next/navigation';
+// import type { Category, Product, ProductImage } from '@/app/generated/prisma'; // Importa tus tipos
+
+// // Tipo para los datos del formulario, incluyendo imágenes
+// type ProductFormData = {
+//     name: string;
+//     description: string;
+//     price: string; // El input será string, convertiremos a número al enviar
+//     stock: string; // Igual que el precio
+//     categoryId: string;
+//     material: string;
+//     color: string;
+//     dimensions: string;
+//     isActive: boolean;
+//     images: { url: string; altText?: string; order?: number }[];
+// };
+
+// interface ProductFormProps {
+//     initialData?: Product & { images: ProductImage[]; category?: Category }; // Para el modo edición
+//     categories: Category[]; // Para el selector de categorías
+//     onSubmit: (data: ProductFormData) => Promise<void>;
+//     isSubmitting: boolean;
+//     submitButtonText?: string;
+// }
+
+// export default function ProductForm({
+//     initialData,
+//     categories,
+//     onSubmit,
+//     isSubmitting,
+//     submitButtonText = 'Guardar Producto',
+// }: ProductFormProps) {
+//     const [formData, setFormData] = useState<ProductFormData>({
+//         name: initialData?.name || '',
+//         description: initialData?.description || '',
+//         price: initialData?.price?.toString() || '', // Convertir Decimal a string
+//         stock: initialData?.stock?.toString() || '0',
+//         categoryId: initialData?.categoryId || categories[0]?.id || '',
+//         material: initialData?.material || '',
+//         color: initialData?.color || '',
+//         dimensions: initialData?.dimensions || '',
+//         isActive:
+//             initialData?.isActive === undefined ? true : initialData.isActive,
+//         images: initialData?.images?.map((img) => ({
+//             url: img.url,
+//             altText: img.altText || '',
+//             order: img.order || undefined,
+//         })) || [{ url: '', altText: '', order: 1 }],
+//     });
+
+//     const router = useRouter();
+
+//     const handleChange = (
+//         e: React.ChangeEvent<
+//             HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+//         >
+//     ) => {
+//         const { name, value, type } = e.target;
+//         if (type === 'checkbox') {
+//             setFormData((prev) => ({
+//                 ...prev,
+//                 [name]: (e.target as HTMLInputElement).checked,
+//             }));
+//         } else {
+//             setFormData((prev) => ({ ...prev, [name]: value }));
+//         }
+//     };
+
+//     const handleImageChange = (
+//         index: number,
+//         field: keyof ProductFormData['images'][0],
+//         value: string | number
+//     ) => {
+//         const newImages = [...formData.images];
+//         // Asegurarse de que el objeto newImages[index] exista
+//         if (!newImages[index])
+//             newImages[index] = { url: '', altText: '', order: index + 1 };
+
+//         if (field === 'order' && typeof value === 'string') {
+//             newImages[index][field] = parseInt(value, 10) || undefined;
+//         } else if (field !== 'order') {
+//             newImages[index][
+//                 field as Exclude<keyof ProductFormData['images'][0], 'order'>
+//             ] = value as string;
+//         }
+
+//         setFormData((prev) => ({ ...prev, images: newImages }));
+//     };
+
+//     const addImageField = () => {
+//         setFormData((prev) => ({
+//             ...prev,
+//             images: [
+//                 ...prev.images,
+//                 { url: '', altText: '', order: prev.images.length + 1 },
+//             ],
+//         }));
+//     };
+
+//     const removeImageField = (index: number) => {
+//         setFormData((prev) => ({
+//             ...prev,
+//             images: prev.images.filter((_, i) => i !== index),
+//         }));
+//     };
+
+//     const handleSubmit = async (e: FormEvent) => {
+//         e.preventDefault();
+//         await onSubmit(formData);
+//     };
+
+//     return (
+//         <form
+//             onSubmit={handleSubmit}
+//             className="space-y-6 bg-white p-8 rounded-lg shadow-md"
+//         >
+//             <div>
+//                 <label
+//                     htmlFor="name"
+//                     className="block text-sm font-medium text-gray-900"
+//                 >
+//                     Nombre del Producto
+//                 </label>
+//                 <input
+//                     type="text"
+//                     name="name"
+//                     id="name"
+//                     value={formData.name}
+//                     onChange={handleChange}
+//                     required
+//                     className="mt-1 block w-full px-3 py-2 border border-gray-500 text-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+//                 />
+//             </div>
+
+//             <div>
+//                 <label
+//                     htmlFor="description"
+//                     className="block text-sm font-medium text-gray-900"
+//                 >
+//                     Descripción
+//                 </label>
+//                 <textarea
+//                     name="description"
+//                     id="description"
+//                     value={formData.description}
+//                     onChange={handleChange}
+//                     rows={4}
+//                     className="mt-1 block w-full px-3 py-2 border border-gray-500 text-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+//                 />
+//             </div>
+
+//             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//                 <div>
+//                     <label
+//                         htmlFor="price"
+//                         className="block text-sm font-medium text-gray-900"
+//                     >
+//                         Precio
+//                     </label>
+//                     <input
+//                         type="number"
+//                         name="price"
+//                         id="price"
+//                         value={formData.price}
+//                         onChange={handleChange}
+//                         required
+//                         step="0.01"
+//                         min="0"
+//                         className="mt-1 block w-full px-3 py-2 border border-gray-500 text-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+//                     />
+//                 </div>
+//                 <div>
+//                     <label
+//                         htmlFor="stock"
+//                         className="block text-sm font-medium text-gray-900"
+//                     >
+//                         Stock
+//                     </label>
+//                     <input
+//                         type="number"
+//                         name="stock"
+//                         id="stock"
+//                         value={formData.stock}
+//                         onChange={handleChange}
+//                         required
+//                         step="1"
+//                         min="0"
+//                         className="mt-1 block w-full px-3 py-2 border border-gray-500 text-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+//                     />
+//                 </div>
+//             </div>
+
+//             <div>
+//                 <label
+//                     htmlFor="categoryId"
+//                     className="block text-sm font-medium text-gray-900"
+//                 >
+//                     Categoría
+//                 </label>
+//                 <select
+//                     name="categoryId"
+//                     id="categoryId"
+//                     value={formData.categoryId}
+//                     onChange={handleChange}
+//                     required
+//                     className="mt-1 block w-full px-3 py-2 border border-gray-500 text-gray-500 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+//                 >
+//                     {categories.map((cat) => (
+//                         <option key={cat.id} value={cat.id}>
+//                             {cat.name}
+//                         </option>
+//                     ))}
+//                 </select>
+//             </div>
+
+//             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+//                 <div>
+//                     <label
+//                         htmlFor="material"
+//                         className="block text-sm font-medium text-gray-900"
+//                     >
+//                         Material
+//                     </label>
+//                     <input
+//                         type="text"
+//                         name="material"
+//                         id="material"
+//                         value={formData.material}
+//                         onChange={handleChange}
+//                         className="mt-1 block w-full px-3 py-2 border border-gray-500 text-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+//                     />
+//                 </div>
+//                 <div>
+//                     <label
+//                         htmlFor="color"
+//                         className="block text-sm font-medium text-gray-900"
+//                     >
+//                         Color
+//                     </label>
+//                     <input
+//                         type="text"
+//                         name="color"
+//                         id="color"
+//                         value={formData.color}
+//                         onChange={handleChange}
+//                         className="mt-1 block w-full px-3 py-2 border border-gray-500 text-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+//                     />
+//                 </div>
+//                 <div>
+//                     <label
+//                         htmlFor="dimensions"
+//                         className="block text-sm font-medium text-gray-900"
+//                     >
+//                         Dimensiones
+//                     </label>
+//                     <input
+//                         type="text"
+//                         name="dimensions"
+//                         id="dimensions"
+//                         value={formData.dimensions}
+//                         onChange={handleChange}
+//                         className="mt-1 block w-full px-3 py-2 border border-gray-500 text-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+//                     />
+//                 </div>
+//             </div>
+
+//             <div className="space-y-4">
+//                 <h3 className="text-md font-medium text-gray-900">
+//                     Imágenes del Producto
+//                 </h3>
+//                 {formData.images.map((image, index) => (
+//                     <div
+//                         key={index}
+//                         className="p-3 border rounded-md space-y-2"
+//                     >
+//                         <div>
+//                             <label
+//                                 htmlFor={`imageUrl-${index}`}
+//                                 className="text-sm text-gray-900"
+//                             >
+//                                 URL Imagen {index + 1}
+//                             </label>
+//                             <input
+//                                 type="url"
+//                                 id={`imageUrl-${index}`}
+//                                 value={image.url}
+//                                 onChange={(e) =>
+//                                     handleImageChange(
+//                                         index,
+//                                         'url',
+//                                         e.target.value
+//                                     )
+//                                 }
+//                                 required
+//                                 className="mt-1 block w-full px-3 py-2 border border-gray-500 text-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+//                                 placeholder="https://ejemplo.com/imagen.jpg"
+//                             />
+//                         </div>
+//                         <div>
+//                             <label
+//                                 htmlFor={`imageAlt-${index}`}
+//                                 className="text-sm text-gray-900"
+//                             >
+//                                 Texto Alternativo {index + 1}
+//                             </label>
+//                             <input
+//                                 type="text"
+//                                 id={`imageAlt-${index}`}
+//                                 value={image.altText || ''}
+//                                 onChange={(e) =>
+//                                     handleImageChange(
+//                                         index,
+//                                         'altText',
+//                                         e.target.value
+//                                     )
+//                                 }
+//                                 className="mt-1 block w-full px-3 py-2 border border-gray-500 text-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+//                             />
+//                         </div>
+//                         <div>
+//                             <label
+//                                 htmlFor={`imageOrder-${index}`}
+//                                 className="text-sm text-gray-900"
+//                             >
+//                                 Orden {index + 1}
+//                             </label>
+//                             <input
+//                                 type="number"
+//                                 id={`imageOrder-${index}`}
+//                                 value={image.order || ''}
+//                                 onChange={(e) =>
+//                                     handleImageChange(
+//                                         index,
+//                                         'order',
+//                                         parseInt(e.target.value, 10)
+//                                     )
+//                                 }
+//                                 className="mt-1 block w-full px-3 py-2 border border-gray-500 text-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+//                                 min="1"
+//                             />
+//                         </div>
+//                         {formData.images.length > 1 && (
+//                             <button
+//                                 type="button"
+//                                 onClick={() => removeImageField(index)}
+//                                 className="text-xs text-red-600 hover:text-red-800 font-medium"
+//                             >
+//                                 Eliminar Imagen
+//                             </button>
+//                         )}
+//                     </div>
+//                 ))}
+//                 <button
+//                     type="button"
+//                     onClick={addImageField}
+//                     className="text-sm py-2 px-3 border border-dashed border-gray-400 rounded-md text-gray-700 hover:bg-gray-50 hover:border-blue-500 hover:text-blue-600 transition-colors"
+//                 >
+//                     + Añadir otra imagen
+//                 </button>
+//             </div>
+
+//             <div className="flex items-center">
+//                 <input
+//                     id="isActive"
+//                     name="isActive"
+//                     type="checkbox"
+//                     checked={formData.isActive}
+//                     onChange={handleChange}
+//                     className="h-4 w-4 text-blue-600 border-gray-500 rounded focus:ring-blue-500"
+//                 />
+//                 <label
+//                     htmlFor="isActive"
+//                     className="ml-2 block text-sm text-gray-900"
+//                 >
+//                     Producto Activo
+//                 </label>
+//             </div>
+
+//             <div className="flex justify-end space-x-3">
+//                 <button
+//                     type="button"
+//                     onClick={() => router.back()}
+//                     className="py-2 px-4 border border-gray-500 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-blue-500 hover:text-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+//                 >
+//                     Cancelar
+//                 </button>
+//                 <button
+//                     type="submit"
+//                     disabled={isSubmitting}
+//                     className="py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 transition-colors"
+//                 >
+//                     {isSubmitting ? 'Guardando...' : submitButtonText}
+//                 </button>
+//             </div>
+//         </form>
+//     );
+// }
+
+// components/admin/ProductForm.tsx
 'use client';
 
-import { useState, useEffect, FormEvent } from 'react';
-import { useRouter } from 'next/navigation';
-import type { Category, Product, ProductImage } from '@/app/generated/prisma'; // Importa tus tipos
+import { useState, FormEvent, ChangeEvent } from 'react';
+import type {
+    Category,
+    Product,
+    ProductImage as PrismaProductImage,
+} from '@/app/generated/prisma';
 
-// Tipo para los datos del formulario, incluyendo imágenes
-type ProductFormData = {
+interface FormImageType {
+    id?: string; // ID de PrismaProductImage si ya existe
+    url: string;
+    altText?: string;
+    order?: number;
+    providerImageId?: string | null; // Para el fileId de ImageKit
+    file?: File; // Para nuevas imágenes a subir
+    isUploading?: boolean;
+    uploadError?: string;
+}
+
+// El tipo de datos que el formulario enviará al backend para crear/actualizar ProductImages
+export interface ProductImageSubmitData {
+    id?: string; // Para identificar imágenes existentes en una actualización
+    url: string;
+    altText?: string | null;
+    order?: number | null;
+    providerImageId?: string | null;
+}
+
+// Tipo para los datos del formulario que se envían a onSubmit
+export type ProductFormSubmitData = {
     name: string;
     description: string;
-    price: string; // El input será string, convertiremos a número al enviar
-    stock: string; // Igual que el precio
+    price: string;
+    stock: string;
     categoryId: string;
     material: string;
     color: string;
     dimensions: string;
     isActive: boolean;
-    images: { url: string; altText?: string; order?: number }[];
+    images: ProductImageSubmitData[]; // Array de datos de imagen para el backend
 };
 
 interface ProductFormProps {
-    initialData?: Product & { images: ProductImage[]; category?: Category }; // Para el modo edición
-    categories: Category[]; // Para el selector de categorías
-    onSubmit: (data: ProductFormData) => Promise<void>;
+    initialData?: Product & {
+        images: PrismaProductImage[];
+        category?: Category | null;
+    };
+    categories: Category[];
+    onSubmit: (data: ProductFormSubmitData) => Promise<void>;
     isSubmitting: boolean;
     submitButtonText?: string;
 }
@@ -33,10 +461,20 @@ export default function ProductForm({
     isSubmitting,
     submitButtonText = 'Guardar Producto',
 }: ProductFormProps) {
-    const [formData, setFormData] = useState<ProductFormData>({
+    const [formDataImages, setFormDataImages] = useState<FormImageType[]>(
+        initialData?.images?.map((img) => ({
+            id: img.id,
+            url: img.url,
+            altText: img.altText || '',
+            order: img.order || undefined,
+            providerImageId: img.providerImageId,
+        })) || []
+    );
+
+    const [formProductData, setFormProductData] = useState({
         name: initialData?.name || '',
         description: initialData?.description || '',
-        price: initialData?.price?.toString() || '', // Convertir Decimal a string
+        price: initialData?.price?.toString() || '',
         stock: initialData?.stock?.toString() || '0',
         categoryId: initialData?.categoryId || categories[0]?.id || '',
         material: initialData?.material || '',
@@ -44,14 +482,7 @@ export default function ProductForm({
         dimensions: initialData?.dimensions || '',
         isActive:
             initialData?.isActive === undefined ? true : initialData.isActive,
-        images: initialData?.images?.map((img) => ({
-            url: img.url,
-            altText: img.altText || '',
-            order: img.order || undefined,
-        })) || [{ url: '', altText: '', order: 1 }],
     });
-
-    const router = useRouter();
 
     const handleChange = (
         e: React.ChangeEvent<
@@ -60,56 +491,136 @@ export default function ProductForm({
     ) => {
         const { name, value, type } = e.target;
         if (type === 'checkbox') {
-            setFormData((prev) => ({
+            setFormProductData((prev) => ({
                 ...prev,
                 [name]: (e.target as HTMLInputElement).checked,
             }));
         } else {
-            setFormData((prev) => ({ ...prev, [name]: value }));
+            setFormProductData((prev) => ({ ...prev, [name]: value }));
         }
     };
 
-    const handleImageChange = (
+    const handleImageFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            const filesToUpload = Array.from(e.target.files);
+
+            const currentImageCount = formDataImages.length;
+            const newImagePlaceholders: FormImageType[] = filesToUpload.map(
+                (file, index) => ({
+                    url: '',
+                    altText: file.name,
+                    order: currentImageCount + index + 1,
+                    file: file,
+                    isUploading: true,
+                })
+            );
+            setFormDataImages((prev) => [...prev, ...newImagePlaceholders]);
+
+            for (let i = 0; i < filesToUpload.length; i++) {
+                const file = filesToUpload[i];
+                const placeholderIndex = currentImageCount + i;
+
+                const imageFormDataPayload = new FormData();
+                imageFormDataPayload.append('file', file);
+
+                try {
+                    const res = await fetch('/api/upload', {
+                        // Llama a tu endpoint de subida
+                        method: 'POST',
+                        body: imageFormDataPayload,
+                    });
+
+                    if (!res.ok) {
+                        const errorData = await res.json();
+                        throw new Error(
+                            errorData.message || `Error al subir ${file.name}`
+                        );
+                    }
+                    const uploadedImageData = await res.json();
+
+                    setFormDataImages((prev) => {
+                        const updatedImages = [...prev];
+                        const targetImage = updatedImages.find(
+                            (img) => img.file === file && img.isUploading
+                        );
+                        if (targetImage) {
+                            targetImage.url = uploadedImageData.url;
+                            targetImage.providerImageId =
+                                uploadedImageData.fileId; // Guardar el fileId de ImageKit
+                            targetImage.isUploading = false;
+                            targetImage.file = undefined;
+                            targetImage.uploadError = undefined;
+                        }
+                        return updatedImages;
+                    });
+                } catch (err) {
+                    console.error(`Error subiendo ${file.name}:`, err);
+                    setFormDataImages((prev) => {
+                        const updatedImages = [...prev];
+                        const targetImage = updatedImages.find(
+                            (img) => img.file === file && img.isUploading
+                        );
+                        if (targetImage) {
+                            targetImage.isUploading = false;
+                            targetImage.uploadError =
+                                err instanceof Error
+                                    ? err.message
+                                    : 'Error desconocido';
+                        }
+                        return updatedImages;
+                    });
+                }
+            }
+            // Limpiar el input de archivo para permitir subir el mismo archivo de nuevo si es necesario
+            if (e.target) e.target.value = '';
+        }
+    };
+
+    const updateImageDetail = (
         index: number,
-        field: keyof ProductFormData['images'][0],
+        field: keyof FormImageType,
         value: string | number
     ) => {
-        const newImages = [...formData.images];
-        // Asegurarse de que el objeto newImages[index] exista
-        if (!newImages[index])
-            newImages[index] = { url: '', altText: '', order: index + 1 };
+        const newImages = [...formDataImages];
+        if (!newImages[index]) return;
 
         if (field === 'order' && typeof value === 'string') {
-            newImages[index][field] = parseInt(value, 10) || undefined;
-        } else if (field !== 'order') {
-            newImages[index][
-                field as Exclude<keyof ProductFormData['images'][0], 'order'>
-            ] = value as string;
+            (newImages[index] as any)[field] = parseInt(value, 10) || undefined;
+        } else if (
+            field !== 'order' &&
+            field !== 'file' &&
+            field !== 'isUploading' &&
+            field !== 'uploadError'
+        ) {
+            (newImages[index] as any)[field] = value as string;
         }
-
-        setFormData((prev) => ({ ...prev, images: newImages }));
+        setFormDataImages(newImages);
     };
 
-    const addImageField = () => {
-        setFormData((prev) => ({
-            ...prev,
-            images: [
-                ...prev.images,
-                { url: '', altText: '', order: prev.images.length + 1 },
-            ],
-        }));
-    };
-
-    const removeImageField = (index: number) => {
-        setFormData((prev) => ({
-            ...prev,
-            images: prev.images.filter((_, i) => i !== index),
-        }));
+    const removeImage = (indexToRemove: number) => {
+        // TODO: Considerar llamar a un endpoint para borrar la imagen de ImageKit si ya fue subida (usando providerImageId)
+        setFormDataImages((prev) =>
+            prev.filter((_, index) => index !== indexToRemove)
+        );
     };
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        await onSubmit(formData);
+        const imagesToSubmit = formDataImages
+            .filter((img) => img.url && !img.isUploading && !img.uploadError) // Solo imágenes subidas y sin error
+            .map((img) => ({
+                id: img.id, // Para actualizar imágenes existentes
+                url: img.url,
+                altText: img.altText,
+                order: img.order,
+                providerImageId: img.providerImageId, // Enviar el fileId de ImageKit
+            }));
+
+        const dataToSubmit: ProductFormSubmitData = {
+            ...formProductData,
+            images: imagesToSubmit,
+        };
+        await onSubmit(dataToSubmit);
     };
 
     return (
@@ -117,10 +628,12 @@ export default function ProductForm({
             onSubmit={handleSubmit}
             className="space-y-6 bg-white p-8 rounded-lg shadow-md"
         >
+            {/* ... (campos del producto: name, description, price, stock, categoryId, material, color, dimensions) ... */}
+            {/* Mantén estos campos como los tenías */}
             <div>
                 <label
                     htmlFor="name"
-                    className="block text-sm font-medium text-gray-900"
+                    className="block text-sm font-medium text-gray-700"
                 >
                     Nombre del Producto
                 </label>
@@ -128,27 +641,27 @@ export default function ProductForm({
                     type="text"
                     name="name"
                     id="name"
-                    value={formData.name}
+                    value={formProductData.name}
                     onChange={handleChange}
                     required
-                    className="mt-1 block w-full px-3 py-2 border border-gray-500 text-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 />
             </div>
 
             <div>
                 <label
                     htmlFor="description"
-                    className="block text-sm font-medium text-gray-900"
+                    className="block text-sm font-medium text-gray-700"
                 >
                     Descripción
                 </label>
                 <textarea
                     name="description"
                     id="description"
-                    value={formData.description}
+                    value={formProductData.description}
                     onChange={handleChange}
                     rows={4}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-500 text-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 />
             </div>
 
@@ -156,7 +669,7 @@ export default function ProductForm({
                 <div>
                     <label
                         htmlFor="price"
-                        className="block text-sm font-medium text-gray-900"
+                        className="block text-sm font-medium text-gray-700"
                     >
                         Precio
                     </label>
@@ -164,18 +677,18 @@ export default function ProductForm({
                         type="number"
                         name="price"
                         id="price"
-                        value={formData.price}
+                        value={formProductData.price}
                         onChange={handleChange}
                         required
                         step="0.01"
                         min="0"
-                        className="mt-1 block w-full px-3 py-2 border border-gray-500 text-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     />
                 </div>
                 <div>
                     <label
                         htmlFor="stock"
-                        className="block text-sm font-medium text-gray-900"
+                        className="block text-sm font-medium text-gray-700"
                     >
                         Stock
                     </label>
@@ -183,12 +696,12 @@ export default function ProductForm({
                         type="number"
                         name="stock"
                         id="stock"
-                        value={formData.stock}
+                        value={formProductData.stock}
                         onChange={handleChange}
                         required
                         step="1"
                         min="0"
-                        className="mt-1 block w-full px-3 py-2 border border-gray-500 text-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     />
                 </div>
             </div>
@@ -196,18 +709,19 @@ export default function ProductForm({
             <div>
                 <label
                     htmlFor="categoryId"
-                    className="block text-sm font-medium text-gray-900"
+                    className="block text-sm font-medium text-gray-700"
                 >
                     Categoría
                 </label>
                 <select
                     name="categoryId"
                     id="categoryId"
-                    value={formData.categoryId}
+                    value={formProductData.categoryId}
                     onChange={handleChange}
                     required
-                    className="mt-1 block w-full px-3 py-2 border border-gray-500 text-gray-500 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 >
+                    <option value="">Selecciona una categoría</option>
                     {categories.map((cat) => (
                         <option key={cat.id} value={cat.id}>
                             {cat.name}
@@ -220,7 +734,7 @@ export default function ProductForm({
                 <div>
                     <label
                         htmlFor="material"
-                        className="block text-sm font-medium text-gray-900"
+                        className="block text-sm font-medium text-gray-700"
                     >
                         Material
                     </label>
@@ -228,15 +742,15 @@ export default function ProductForm({
                         type="text"
                         name="material"
                         id="material"
-                        value={formData.material}
+                        value={formProductData.material}
                         onChange={handleChange}
-                        className="mt-1 block w-full px-3 py-2 border border-gray-500 text-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     />
                 </div>
                 <div>
                     <label
                         htmlFor="color"
-                        className="block text-sm font-medium text-gray-900"
+                        className="block text-sm font-medium text-gray-700"
                     >
                         Color
                     </label>
@@ -244,15 +758,15 @@ export default function ProductForm({
                         type="text"
                         name="color"
                         id="color"
-                        value={formData.color}
+                        value={formProductData.color}
                         onChange={handleChange}
-                        className="mt-1 block w-full px-3 py-2 border border-gray-500 text-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     />
                 </div>
                 <div>
                     <label
                         htmlFor="dimensions"
-                        className="block text-sm font-medium text-gray-900"
+                        className="block text-sm font-medium text-gray-700"
                     >
                         Dimensiones
                     </label>
@@ -260,49 +774,76 @@ export default function ProductForm({
                         type="text"
                         name="dimensions"
                         id="dimensions"
-                        value={formData.dimensions}
+                        value={formProductData.dimensions}
                         onChange={handleChange}
-                        className="mt-1 block w-full px-3 py-2 border border-gray-500 text-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     />
                 </div>
             </div>
 
-            <div className="space-y-4">
+            {/* Sección de Imágenes */}
+            <div className="space-y-4 border-t pt-6 mt-6">
                 <h3 className="text-md font-medium text-gray-900">
                     Imágenes del Producto
                 </h3>
-                {formData.images.map((image, index) => (
-                    <div
-                        key={index}
-                        className="p-3 border rounded-md space-y-2"
+                <div>
+                    <label
+                        htmlFor="imageUpload"
+                        className="block text-sm font-medium text-gray-700"
                     >
-                        <div>
-                            <label
-                                htmlFor={`imageUrl-${index}`}
-                                className="text-sm text-gray-900"
-                            >
-                                URL Imagen {index + 1}
-                            </label>
-                            <input
-                                type="url"
-                                id={`imageUrl-${index}`}
-                                value={image.url}
-                                onChange={(e) =>
-                                    handleImageChange(
-                                        index,
-                                        'url',
-                                        e.target.value
-                                    )
-                                }
-                                required
-                                className="mt-1 block w-full px-3 py-2 border border-gray-500 text-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                placeholder="https://ejemplo.com/imagen.jpg"
-                            />
-                        </div>
+                        Subir nuevas imágenes
+                    </label>
+                    <input
+                        type="file"
+                        id="imageUpload"
+                        multiple
+                        onChange={handleImageFileChange}
+                        accept="image/png, image/jpeg, image/webp, image/gif"
+                        className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                    />
+                </div>
+
+                {formDataImages.map((image, index) => (
+                    <div
+                        key={
+                            image.id ||
+                            `new-<span class="math-inline">\{index\}\-</span>{image.file?.name || 'placeholder'}`
+                        }
+                        className="p-3 border rounded-md space-y-3 relative"
+                    >
+                        {image.isUploading && (
+                            <div className="text-xs text-blue-500 animate-pulse">
+                                Subiendo {image.altText}...
+                            </div>
+                        )}
+                        {image.uploadError && (
+                            <div className="text-xs text-red-500">
+                                Error: {image.uploadError}
+                            </div>
+                        )}
+
+                        {image.url &&
+                            !image.isUploading &&
+                            !image.uploadError && (
+                                <img
+                                    src={image.url}
+                                    alt={image.altText || 'Vista previa'}
+                                    className="w-32 h-32 object-cover rounded-md mb-2"
+                                />
+                            )}
+                        {!image.url &&
+                            !image.isUploading &&
+                            !image.uploadError &&
+                            image.file && (
+                                <div className="text-xs text-gray-500">
+                                    Pendiente de subir: {image.altText}
+                                </div>
+                            )}
+
                         <div>
                             <label
                                 htmlFor={`imageAlt-${index}`}
-                                className="text-sm text-gray-900"
+                                className="text-sm font-medium text-gray-700"
                             >
                                 Texto Alternativo {index + 1}
                             </label>
@@ -311,19 +852,20 @@ export default function ProductForm({
                                 id={`imageAlt-${index}`}
                                 value={image.altText || ''}
                                 onChange={(e) =>
-                                    handleImageChange(
+                                    updateImageDetail(
                                         index,
                                         'altText',
                                         e.target.value
                                     )
                                 }
-                                className="mt-1 block w-full px-3 py-2 border border-gray-500 text-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                disabled={image.isUploading}
                             />
                         </div>
                         <div>
                             <label
                                 htmlFor={`imageOrder-${index}`}
-                                className="text-sm text-gray-900"
+                                className="text-sm font-medium text-gray-700"
                             >
                                 Orden {index + 1}
                             </label>
@@ -332,34 +874,27 @@ export default function ProductForm({
                                 id={`imageOrder-${index}`}
                                 value={image.order || ''}
                                 onChange={(e) =>
-                                    handleImageChange(
+                                    updateImageDetail(
                                         index,
                                         'order',
                                         parseInt(e.target.value, 10)
                                     )
                                 }
-                                className="mt-1 block w-full px-3 py-2 border border-gray-500 text-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                 min="1"
+                                disabled={image.isUploading}
                             />
                         </div>
-                        {formData.images.length > 1 && (
-                            <button
-                                type="button"
-                                onClick={() => removeImageField(index)}
-                                className="text-xs text-red-600 hover:text-red-800 font-medium"
-                            >
-                                Eliminar Imagen
-                            </button>
-                        )}
+                        <button
+                            type="button"
+                            onClick={() => removeImage(index)}
+                            className="absolute top-2 right-2 text-xs text-red-500 hover:text-red-700 p-1 bg-white rounded-full shadow disabled:opacity-50"
+                            disabled={image.isUploading}
+                        >
+                            ✕
+                        </button>
                     </div>
                 ))}
-                <button
-                    type="button"
-                    onClick={addImageField}
-                    className="text-sm py-2 px-3 border border-dashed border-gray-400 rounded-md text-gray-700 hover:bg-gray-50 hover:border-blue-500 hover:text-blue-600 transition-colors"
-                >
-                    + Añadir otra imagen
-                </button>
             </div>
 
             <div className="flex items-center">
@@ -367,9 +902,9 @@ export default function ProductForm({
                     id="isActive"
                     name="isActive"
                     type="checkbox"
-                    checked={formData.isActive}
+                    checked={formProductData.isActive}
                     onChange={handleChange}
-                    className="h-4 w-4 text-blue-600 border-gray-500 rounded focus:ring-blue-500"
+                    className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
                 />
                 <label
                     htmlFor="isActive"
@@ -380,17 +915,14 @@ export default function ProductForm({
             </div>
 
             <div className="flex justify-end space-x-3">
-                <button
-                    type="button"
-                    onClick={() => router.back()}
-                    className="py-2 px-4 border border-gray-500 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-blue-500 hover:text-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                >
-                    Cancelar
-                </button>
+                {/* <button type="button" onClick={() => router.back()} ... > Cancelar </button> */}
                 <button
                     type="submit"
-                    disabled={isSubmitting}
-                    className="py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 transition-colors"
+                    disabled={
+                        isSubmitting ||
+                        formDataImages.some((img) => !!img.isUploading)
+                    }
+                    className="py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
                 >
                     {isSubmitting ? 'Guardando...' : submitButtonText}
                 </button>

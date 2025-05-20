@@ -1,22 +1,8 @@
 @import "tailwindcss";
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-body {
-  color: rgb(var(--foreground-rgb));
-  background: white;
-}
-
 @theme {
-  --color-background: #ffffff;
-  --color-foreground: #171717;
-
-  --color-background: hsl(0 0% 100%); /* Corresponds to your original --background */
-  --color-foreground: hsl(222.2 84% 4.9%); /* Corresponds to your original --foreground */
+  --color-background: hsl(0 0% 100%);
+  --color-foreground: hsl(222.2 84% 4.9%);
   --color-card: hsl(0 0% 100%);
   --color-card-foreground: hsl(222.2 84% 4.9%);
   --color-popover: hsl(0 0% 100%);
@@ -33,11 +19,8 @@ body {
   --color-destructive-foreground: hsl(210 40% 98%);
   --color-border: hsl(214.3 31.8% 91.4%);
   --color-input: hsl(214.3 31.8% 91.4%);
-  --color-ring: hsl(201 45% 29%); /* This is the color for focus rings, etc. */
+  --color-ring: hsl(201 45% 29%);
 
-  /* General radius variable (can be used with var(--radius) in CSS) */
-  /* To generate Tailwind radius utilities like rounded-sm, rounded-md, etc.,
-     you'd define --radius-sm, --radius-md in the theme. */
   --radius: 0.5rem;
 
   /* Colores de la marca */
@@ -46,25 +29,22 @@ body {
   --color-brand-accent-fresh: hsl(189 67% 43%);
   --color-brand-accent-sophisticated: hsl(244 24% 48%);
 
-  /* Colores para gráficos (Light Mode) */
-  /* These will generate utilities like bg-chart-1, text-chart-1, etc. */
-  --color-chart-1: var(--color-brand-primary); /* Referencing another theme variable */
+  /* Colores para gráficos */
+  --color-chart-1: var(--color-brand-primary);
   --color-chart-2: var(--color-brand-accent-vibrant);
   --color-chart-3: var(--color-brand-accent-fresh);
   --color-chart-4: var(--color-brand-accent-sophisticated);
   --color-chart-5: hsl(220 14% 96%);
-
 }
 
 .dark {
-
   --color-background: hsl(222.2 84% 4.9%);
   --color-foreground: hsl(210 40% 98%);
   --color-card: hsl(222.2 84% 4.9%);
   --color-card-foreground: hsl(210 40% 98%);
   --color-popover: hsl(222.2 84% 4.9%);
   --color-popover-foreground: hsl(210 40% 98%);
-  --color-primary: hsl(201 45% 29%); /* Ajusta si el color primario cambia en modo oscuro */
+  --color-primary: hsl(201 45% 29%);
   --color-primary-foreground: hsl(210 40% 98%);
   --color-secondary: hsl(217.2 32.6% 17.5%);
   --color-secondary-foreground: hsl(210 40% 98%);
@@ -76,9 +56,8 @@ body {
   --color-destructive-foreground: hsl(210 40% 98%);
   --color-border: hsl(217.2 32.6% 17.5%);
   --color-input: hsl(217.2 32.6% 17.5%);
-  --color-ring: hsl(201 45% 29%); /* Ajusta si el color del anillo cambia en modo oscuro */ --background: oklch(0.145 0 0); --foreground: oklch(0.985 0 0); --card: oklch(0.205 0 0); --card-foreground: oklch(0.985 0 0); --popover: oklch(0.205 0 0); --popover-foreground: oklch(0.985 0 0); --primary: oklch(0.922 0 0); --primary-foreground: oklch(0.205 0 0); --secondary: oklch(0.269 0 0); --secondary-foreground: oklch(0.985 0 0); --muted: oklch(0.269 0 0); --muted-foreground: oklch(0.708 0 0); --accent: oklch(0.269 0 0); --accent-foreground: oklch(0.985 0 0); --destructive: oklch(0.704 0.191 22.216); --border: oklch(1 0 0 / 10%); --input: oklch(1 0 0 / 15%); --ring: oklch(0.556 0 0); --chart-1: oklch(0.488 0.243 264.376); --chart-2: oklch(0.696 0.17 162.48); --chart-3: oklch(0.769 0.188 70.08); --chart-4: oklch(0.627 0.265 303.9); --chart-5: oklch(0.645 0.246 16.439); --sidebar: oklch(0.205 0 0); --sidebar-foreground: oklch(0.985 0 0); --sidebar-primary: oklch(0.488 0.243 264.376); --sidebar-primary-foreground: oklch(0.985 0 0); --sidebar-accent: oklch(0.269 0 0); --sidebar-accent-foreground: oklch(0.985 0 0); --sidebar-border: oklch(1 0 0 / 10%); --sidebar-ring: oklch(0.556 0 0);
+  --color-ring: hsl(201 45% 29%);
 }
-
 
 @layer base {
   * {
@@ -88,18 +67,6 @@ body {
     @apply bg-background text-foreground;
   }
 }
-/* @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-} */
-
-
-
-/* body {
-  @apply bg-background text-foreground;
-} */
 
 
 

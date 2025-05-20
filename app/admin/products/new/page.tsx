@@ -57,7 +57,7 @@ export default function NewProductPage() {
 
             // const newProduct = await res.json();
             alert('¡Producto creado exitosamente!'); // O un sistema de notificaciones más elegante
-            router.push('/products'); // Redirigir a la lista de productos del admin (si existe) o a donde quieras en este caso a products
+            router.push('/productos'); // Redirigir a la lista de productos del admin (si existe) o a donde quieras en este caso a products
         } catch (err) {
             setError(
                 err instanceof Error

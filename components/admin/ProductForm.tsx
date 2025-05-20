@@ -194,8 +194,27 @@ export default function ProductForm({
         setFormDataImages(newImages);
     };
 
-    const removeImage = (indexToRemove: number) => {
-        // TODO: Considerar llamar a un endpoint para borrar la imagen de ImageKit si ya fue subida (usando providerImageId)
+    const removeImage = async (indexToRemove: number) => {
+        const imageToRemove = formDataImages[indexToRemove];
+        
+        // Si la imagen ya fue subida al proveedor (tiene providerImageId), eliminarla
+        if (imageToRemove.providerImageId) {
+            try {
+                const res = await fetch(`/api/upload/${imageToRemove.providerImageId}`, {
+                    method: 'DELETE',
+                });
+                
+                if (!res.ok) {
+                    const errorData = await res.json();
+                    throw new Error(errorData.message || 'Error al eliminar la imagen del proveedor');
+                }
+            } catch (err) {
+                console.error('Error al eliminar la imagen del proveedor:', err);
+                // Aún así eliminamos la imagen del estado local
+            }
+        }
+        
+        // Eliminar la imagen del estado local
         setFormDataImages((prev) =>
             prev.filter((_, index) => index !== indexToRemove)
         );
